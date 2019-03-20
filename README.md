@@ -25,6 +25,7 @@ username=NTTCom-MS
 * **skip-forked-repos**: Determines if forked repos are skipped (defalt: false)
 * **debug**: Enables debug mode (default: false)
 * **message**: Release message
+* **update-description**: Updates repo description using summary found in the metadata file (default: true)
 
 ## Execute
 
