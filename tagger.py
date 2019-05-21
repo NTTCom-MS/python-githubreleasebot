@@ -77,7 +77,7 @@ if __name__ == '__main__':
 
             if skip_forked_repos and repo.fork:
                 if debug:
-                    print("skipping forked repo: {}".format(repo.name))
+                    print("skipping forked repo: {}/{}".format(gh_username,repo.name))
                 continue
 
             try:
@@ -89,7 +89,7 @@ if __name__ == '__main__':
 
                 metadata = json.loads(metadata_json_str)
             except Exception as e:
-                eprint("ERROR: retrieving metadata for {}: {}".format(repo.name,str(e)))
+                eprint("ERROR: retrieving metadata for {}/{}: {}".format(gh_username,repo.name,str(e)))
                 continue
 
             # releases
@@ -98,18 +98,18 @@ if __name__ == '__main__':
                 for rel in repo.get_releases():
                     if LooseVersion(latest_release) < LooseVersion(rel.title):
                         latest_release = rel.title
-            except:
-                eprint("ERROR: retrieving releases for {}".format(repo.name))
+            except Exception as e:
+                eprint("ERROR: retrieving releases for {}/{}: {}".format(gh_username,repo.name,str(e)))
                 continue
 
             if metadata['version'] != latest_release:
                 # Create a new release as metadata version
                 repo.create_git_release(tag=metadata['version'],name=metadata['version'],message=message)
                 if debug:
-                    print("Updating {} - Latest version: {} - Was: {}".format(repo.name, metadata['version'], latest_release))
+                    print("Updating {}/{} - Latest version: {} - Was: {}".format(gh_username,repo.name, metadata['version'], latest_release))
             else:
                 if debug:
-                    print("No need to update {}".format(repo.name))
+                    print("No need to update {}/{}".format(gh_username,repo.name))
 
             # update repo title
             if update_description:
@@ -117,4 +117,4 @@ if __name__ == '__main__':
                     if repo.description!=metadata['summary']:
                         repo.edit(description=metadata['summary'])
                         if debug:
-                            print("Updating {} - setting description: {}".format(repo.name, metadata['summary']))
+                            print("Updating {}/{} - setting description: {}".format(gh_username,repo.name, metadata['summary']))
